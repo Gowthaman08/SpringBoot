@@ -25,8 +25,7 @@ public class EmployeeController {
 	public ResponseEntity<Object> createEmployee(@RequestBody  EmployeeDao employeeDao)
 	{
 		Employee employee=employeeConverter.EmployeeDaoToEmployee(employeeDao);
-		employeeService.createEmployee(employee);
-		String msg=employeeService.sendMail(employee.getEmail(), "Password reset link", "You can reset your password https://courseweb.sliit.lk/");
+		String msg=employeeService.createEmployeeSendMail(employee,employee.getEmail(), "Password reset link", "You can reset your password https://courseweb.sliit.lk/");
 		return new ResponseEntity<Object>(msg,HttpStatus.OK);
 	} 
 

@@ -19,37 +19,39 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	@Autowired
 	JavaMailSender javaMailSender;
-	
 	@Override
-	public void createEmployee(Employee employee) {
-		employeeRepository.save(employee);
-	}
-
-	@Override
-	public String sendMail(String toEmail, String subject, String message)  {
+	public String createEmployeeSendMail(Employee employee,String toEmail, String subject, String message)  {
 		try {
+			System.out.println(toEmail);
 			if(toEmail.substring((toEmail.length()-4), (toEmail.length())).equals(".com"))
 			{
-				var mailMessage = new SimpleMailMessage();
+				if(!(employeeRepository.existsByEmail(toEmail)))
+				{
+					var mailMessage = new SimpleMailMessage();
 
-		        mailMessage.setTo(toEmail);
-		        mailMessage.setSubject(subject);
-		        mailMessage.setText(message);
+					mailMessage.setTo(toEmail);
+					mailMessage.setSubject(subject);
+					mailMessage.setText(message);
 
-		        javaMailSender.send(mailMessage);
-		        msg="Mail sented";
+					javaMailSender.send(mailMessage);
+					employeeRepository.save(employee);
+					msg="Mail sented";
+				}
+				else
+				{
+					throw new EmailExist("Email already exists");
+				}
 			}
 			else
 			{
 				throw new UserDefinedException("com is missing");
 			}
 		}
-		catch(UserDefinedException e)
+		catch(UserDefinedException | EmailExist e)
 		{
 			msg=e.toString();
 		} 
 		return msg;
-	 	
     }
 	
 	
