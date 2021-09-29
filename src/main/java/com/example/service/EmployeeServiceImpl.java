@@ -11,14 +11,14 @@ import com.example.repository.EmployeeRepository;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
-	String toEmail,msg="Mail sented";
+	String toEmail,msg;
+	int count=0;
 
 	@Autowired
 	EmployeeRepository employeeRepository;
 	
 	@Autowired
 	JavaMailSender javaMailSender;
-
 	
 	@Override
 	public void createEmployee(Employee employee) {
@@ -28,23 +28,26 @@ public class EmployeeServiceImpl implements EmployeeService{
 	@Override
 	public String sendMail(String toEmail, String subject, String message)  {
 		try {
-			this.toEmail=toEmail;
-			var mailMessage = new SimpleMailMessage();
-			UserDefinedException excep=new UserDefinedException(toEmail);
+			if(toEmail.substring((toEmail.length()-4), (toEmail.length())).equals(".com"))
+			{
+				var mailMessage = new SimpleMailMessage();
 
-	        mailMessage.setTo(toEmail);
-	        mailMessage.setSubject(subject);
-	        mailMessage.setText(message);
+		        mailMessage.setTo(toEmail);
+		        mailMessage.setSubject(subject);
+		        mailMessage.setText(message);
 
-	        javaMailSender.send(mailMessage);
-	        
+		        javaMailSender.send(mailMessage);
+		        msg="Mail sented";
+			}
+			else
+			{
+				throw new UserDefinedException("com is missing");
+			}
 		}
 		catch(UserDefinedException e)
 		{
 			msg=e.toString();
-		} catch (Exception e) {
-			msg=e.toString();
-		}
+		} 
 		return msg;
 	 	
     }
@@ -52,20 +55,4 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 
 }
-class UserDefinedException extends Exception  
-{  
-    public UserDefinedException(String str) throws Exception  
-    {  
-        for(int i=0;i<str.length();i++)
-        {
-        	if(str.charAt(i)=='@')
-        	{
-        		
-        	}
-        	else
-        	{
-        		throw new Exception("@ is missing");
-        	}
-        }
-    }  
-}
+
