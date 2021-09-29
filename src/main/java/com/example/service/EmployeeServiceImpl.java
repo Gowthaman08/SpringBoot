@@ -30,15 +30,19 @@ public class EmployeeServiceImpl implements EmployeeService{
 		try {
 			this.toEmail=toEmail;
 			var mailMessage = new SimpleMailMessage();
+			UserDefinedException excep=new UserDefinedException(toEmail);
 
 	        mailMessage.setTo(toEmail);
 	        mailMessage.setSubject(subject);
 	        mailMessage.setText(message);
 
 	        javaMailSender.send(mailMessage);
+	        
 		}
-		catch(NullPointerException e)
+		catch(UserDefinedException e)
 		{
+			msg=e.toString();
+		} catch (Exception e) {
 			msg=e.toString();
 		}
 		return msg;
@@ -47,4 +51,21 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	
 
+}
+class UserDefinedException extends Exception  
+{  
+    public UserDefinedException(String str) throws Exception  
+    {  
+        for(int i=0;i<str.length();i++)
+        {
+        	if(str.charAt(i)=='@')
+        	{
+        		
+        	}
+        	else
+        	{
+        		throw new Exception("@ is missing");
+        	}
+        }
+    }  
 }

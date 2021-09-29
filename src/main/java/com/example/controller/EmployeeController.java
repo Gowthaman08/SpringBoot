@@ -3,6 +3,7 @@ package com.example.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +30,12 @@ public class EmployeeController {
 		employeeService.createEmployee(employee);
 		String msg=employeeService.sendMail(employee.getEmail(), "Password reset link", "You can reset your password https://courseweb.sliit.lk/");
 		return new ResponseEntity<Object>(msg,HttpStatus.OK);
-	}  
+	} 
+	
+	@GetMapping(value = "/hello")
+	public String getHello() {
+		return "hiii";
+	}
 
 }
+
